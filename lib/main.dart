@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:virtual_food_storage/homePage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'views/welcome_view.dart';
+import 'views/login_view.dart';
+import 'views/signup_view.dart';
+import 'views/dashboard_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Virtual Food Storage',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const StoregeHomepage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const WelcomeView(),
+        '/login': (context) => LoginView(),
+        '/signup': (context) => SignUpView(),
+        '/dashboard': (context) => const DashboardView(),
+        // Define other routes as needed
+      },
     );
   }
 }
