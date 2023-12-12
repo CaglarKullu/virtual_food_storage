@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:virtual_food_storage/providers/food_item_provider.dart';
-import '../controllers/food_item_controller.dart';
-import '../models/food_item.dart';
+import 'package:virtual_food_storage/state/user_state.dart';
+import '../providers/user_provider.dart';
 import 'item_management_view.dart';
 
 class DashboardView extends ConsumerWidget {
@@ -11,8 +13,70 @@ class DashboardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foodItems = ref.watch(foodItemControllerProvider);
+    final userController = ref.read(userProvider.notifier);
+    final userState = ref.watch(userProvider);
+    log(userState.status.toString());
+    return switch (userState.status) {
+      UserStateStatus.initial => Navigator.pushNamed(context, '/login'),
+      UserStateStatus.loading => const Scaffold(
+          body: Center(child: CircularProgressIndicator.adaptive()),
+        ),
+      UserStateStatus.success => Scaffold(
+          appBar: AppBar(
+            title: const Text('Dashboard'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  ref.refresh(foodItemControllerProvider);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.logout_outlined),
+                onPressed: () async {
+                  await userController.signOut();
+                },
+              ),
+            ],
+          ),
+          body: ListView.builder(
+            itemCount: foodItems.length,
+            itemBuilder: (context, index) {
+              final item = foodItems[index];
+              return ListTile(
+                title: Text(item.name),
+                subtitle: Text(
+                    'Expires on: ${item.expirationDate.toIso8601String()}'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ItemManagementView(item: item),
+                        ));
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        ref
+                            .read(foodItemControllerProvider.notifier)
+                            .deleteItem(item.id);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      UserStateStatus.error =>
+        Scaffold(body: Text(userState.errorMessage.toString())),
+    } as Widget;
 
-    return Scaffold(
+/*     Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
         actions: [
@@ -22,40 +86,52 @@ class DashboardView extends ConsumerWidget {
               ref.refresh(foodItemControllerProvider);
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.logout_outlined),
+            onPressed: () async {
+              await userController.signOut();
+            },
+          ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: foodItems.length,
-        itemBuilder: (context, index) {
-          final item = foodItems[index];
-          return ListTile(
-            title: Text(item.name),
-            subtitle:
-                Text('Expires on: ${item.expirationDate.toIso8601String()}'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ItemManagementView(item: item),
-                    ));
-                  },
+      body: switch (userState.status) {
+        UserStateStatus.initial => Navigator.pushNamed(context, '/login'),
+        UserStateStatus.success => ListView.builder(
+            itemCount: foodItems.length,
+            itemBuilder: (context, index) {
+              final item = foodItems[index];
+              return ListTile(
+                title: Text(item.name),
+                subtitle: Text(
+                    'Expires on: ${item.expirationDate.toIso8601String()}'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ItemManagementView(item: item),
+                        ));
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        ref
+                            .read(foodItemControllerProvider.notifier)
+                            .deleteItem(item.id);
+                      },
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    ref
-                        .read(foodItemControllerProvider.notifier)
-                        .deleteItem(item.id);
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+              );
+            },
+          ),
+        UserStateStatus.loading => const CircularProgressIndicator.adaptive(),
+        UserStateStatus.error => null,
+        _ => null,
+      } as Widget,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
@@ -66,6 +142,6 @@ class DashboardView extends ConsumerWidget {
         },
         child: const Icon(Icons.add),
       ),
-    );
+    ); */
   }
 }
