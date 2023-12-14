@@ -2,16 +2,15 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../controllers/user_controller.dart';
-import '../providers/supabase_client_provider.dart';
+import 'package:virtual_food_storage/utils/error_snackBar.dart';
 import '../providers/user_provider.dart';
 import '../state/user_state.dart';
+import '../utils/email_Validator.dart';
 
 class LoginView extends ConsumerWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
   LoginView({super.key});
 
   @override
@@ -21,10 +20,11 @@ class LoginView extends ConsumerWidget {
     log(userState.status.toString());
     return switch (userState.status) {
       UserStateStatus.loading => const Scaffold(
-          body: CircularProgressIndicator.adaptive(),
+          body: Center(child: CircularProgressIndicator.adaptive()),
         ),
-      UserStateStatus.error => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(userState.errorMessage.toString()))) as Widget,
+      UserStateStatus.error =>
+        showSnackBar(context: context, error: userState.errorMessage.toString())
+            as Widget,
       _ => Scaffold(
           appBar: AppBar(title: const Text('Login')),
           body: Padding(
@@ -39,9 +39,7 @@ class LoginView extends ConsumerWidget {
                     decoration: const InputDecoration(
                         labelText: 'Email', border: OutlineInputBorder()),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (value) => value != null && value.contains('@')
-                        ? null
-                        : 'Enter a valid email',
+                    validator: EmailValidator.validate,
                   ),
                   const SizedBox(height: 16.0),
                   TextFormField(
@@ -64,13 +62,14 @@ class LoginView extends ConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('Login successful')));
-                          if (!context.mounted) return;
+                          if (!context.mounted ||
+                              (userState.status == UserStateStatus.error) ||
+                              (userState.status == UserStateStatus.initial)) {
+                            return;
+                          }
                           Navigator.popAndPushNamed(context, '/dashboard');
-                        }).onError((error, stackTrace) => ScaffoldMessenger.of(
-                                    context)
-                                .showSnackBar(SnackBar(
-                                    content: Text(
-                                        'Error: ${error!.toString() + stackTrace.toString()}'))));
+                        }).onError((error, stackTrace) => showSnackBar(
+                                context: context, error: error.toString()));
                       }
                     },
                     child: const Text('Login'),

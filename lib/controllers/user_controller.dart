@@ -42,15 +42,21 @@ class UserController extends StateNotifier<UserState> {
         state = state.copyWith(status: UserStateStatus.success, user: appUser);
       }
     } catch (e) {
-      state =
-          UserState(status: UserStateStatus.error, errorMessage: e.toString());
+      state = state.copyWith(
+          status: UserStateStatus.error, errorMessage: e.toString());
       throw Exception('Sign In failed: ${e.toString()}');
     }
   }
 
   Future<void> signOut() async {
-    await _supabaseClient.auth.signOut();
-    state = state.copyWith(status: UserStateStatus.initial);
+    state = state.copyWith(status: UserStateStatus.loading);
+    try {
+      await _supabaseClient.auth.signOut();
+      state = state.copyWith(status: UserStateStatus.initial);
+    } catch (e) {
+      state = state.copyWith(
+          status: UserStateStatus.error, errorMessage: e.toString());
+    }
   }
 
   Future<void> resetPassword(String email) async {
