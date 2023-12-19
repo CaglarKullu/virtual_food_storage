@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'views/welcome_view.dart';
-import 'views/login_view.dart';
-import 'views/signup_view.dart';
-import 'views/dashboard_view.dart';
+
+import 'src/views/dashboard_view.dart';
+import 'src/views/login_view.dart';
+import 'src/views/signup_view.dart';
+import 'src/views/welcome_view.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));

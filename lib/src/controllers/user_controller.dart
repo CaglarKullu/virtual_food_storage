@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../state/user_state.dart';
@@ -14,6 +16,12 @@ class UserController extends StateNotifier<UserState> {
           await _supabaseClient.auth.signUp(password: password, email: email);
       if (response.user != null) {
         final appUser = User.fromJson(response.user!.toJson());
+
+/*         await _supabaseClient.from('users').insert({
+          'user_id': appUser?.id,
+          'username': appUser?.email,
+          'email': appUser?.email
+        }); */
         state = state.copyWith(status: UserStateStatus.initial, user: appUser);
       } else {
         state = state.copyWith(
@@ -23,6 +31,7 @@ class UserController extends StateNotifier<UserState> {
     } catch (e) {
       state = state.copyWith(
           status: UserStateStatus.error, errorMessage: e.toString());
+      log(state.errorMessage.toString());
       throw Exception('Sign Up failed: ${e.toString()}');
     }
   }

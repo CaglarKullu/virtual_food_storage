@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:virtual_food_storage/models/food_item.dart';
+
+import '../models/food_item.dart';
 
 class ItemManagementView extends StatelessWidget {
   final FoodItem item;
