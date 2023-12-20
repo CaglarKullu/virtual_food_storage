@@ -1,46 +1,32 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:virtual_food_storage/src/services/auth_response.dart';
+import '../services/i_user_backend.dart';
 import '../state/user_state.dart';
 
 class UserController extends StateNotifier<UserState> {
-  final SupabaseClient _supabaseClient;
+  final IUserBackend _backend;
 
-  UserController(this._supabaseClient) : super(const UserState());
+  UserController(this._backend) : super(const UserState());
 
   Future<void> signUp(String email, String password) async {
     state = state.copyWith(status: UserStateStatus.loading);
-    try {
-      final response =
-          await _supabaseClient.auth.signUp(password: password, email: email);
-      if (response.user != null) {
-        final appUser = User.fromJson(response.user!.toJson());
-
-/*         await _supabaseClient.from('users').insert({
-          'user_id': appUser?.id,
-          'username': appUser?.email,
-          'email': appUser?.email
-        }); */
-        state = state.copyWith(status: UserStateStatus.initial, user: appUser);
-      } else {
-        state = state.copyWith(
-            status: UserStateStatus.error, errorMessage: response.toString());
-        throw Exception('Sign Up failed: ${response.toString()}');
-      }
-    } catch (e) {
+    final ServiceAuthResponse response =
+        await _backend.signUp(email: email, password: password);
+    if (response.isSuccess) {
+      state =
+          state.copyWith(status: UserStateStatus.success, user: response.user);
+    } else {
       state = state.copyWith(
-          status: UserStateStatus.error, errorMessage: e.toString());
-      log(state.errorMessage.toString());
-      throw Exception('Sign Up failed: ${e.toString()}');
+          status: UserStateStatus.error, errorMessage: response.errorMessage);
     }
   }
 
   Future<void> signIn(String email, String password) async {
     state = state.copyWith(status: UserStateStatus.loading);
     try {
-      final response = await _supabaseClient.auth
-          .signInWithPassword(email: email, password: password)
+      final response = await _backend
+          .signIn(email: email, password: password)
           .onError((error, stackTrace) {
         state = state.copyWith(
             status: UserStateStatus.error, errorMessage: error.toString());
@@ -60,7 +46,7 @@ class UserController extends StateNotifier<UserState> {
   Future<void> signOut() async {
     state = state.copyWith(status: UserStateStatus.loading);
     try {
-      await _supabaseClient.auth.signOut();
+      await _backend.signOut();
       state = state.copyWith(status: UserStateStatus.initial);
     } catch (e) {
       state = state.copyWith(
@@ -69,8 +55,8 @@ class UserController extends StateNotifier<UserState> {
   }
 
   Future<void> resetPassword(String email) async {
-    await _supabaseClient.auth.resetPasswordForEmail(email).onError(
-        (error, stackTrace) => throw Exception(
+    await _backend.resetPassword(email: email).onError((error, stackTrace) =>
+        throw Exception(
             'Password reset failed: ${error.toString() + stackTrace.toString()}'));
   }
 }
