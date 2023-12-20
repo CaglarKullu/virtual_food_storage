@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:virtual_food_storage/src/services/auth_response.dart';
 import '../services/i_user_backend.dart';
 import '../state/user_state.dart';
@@ -24,22 +23,16 @@ class UserController extends StateNotifier<UserState> {
 
   Future<void> signIn(String email, String password) async {
     state = state.copyWith(status: UserStateStatus.loading);
-    try {
-      final response = await _backend
-          .signIn(email: email, password: password)
-          .onError((error, stackTrace) {
-        state = state.copyWith(
-            status: UserStateStatus.error, errorMessage: error.toString());
-        throw Exception('Sign In failed: ${error.toString()}');
-      });
-      if (response.user != null) {
-        final appUser = User.fromJson(response.user!.toJson());
-        state = state.copyWith(status: UserStateStatus.success, user: appUser);
-      }
-    } catch (e) {
+
+    final ServiceAuthResponse response =
+        await _backend.signIn(email: email, password: password);
+
+    if (response.isSuccess) {
+      state =
+          state.copyWith(status: UserStateStatus.success, user: response.user);
+    } else {
       state = state.copyWith(
-          status: UserStateStatus.error, errorMessage: e.toString());
-      throw Exception('Sign In failed: ${e.toString()}');
+          status: UserStateStatus.error, errorMessage: response.errorMessage);
     }
   }
 
@@ -47,7 +40,7 @@ class UserController extends StateNotifier<UserState> {
     state = state.copyWith(status: UserStateStatus.loading);
     try {
       await _backend.signOut();
-      state = state.copyWith(status: UserStateStatus.initial);
+      state = state.copyWith(status: UserStateStatus.initial, user: null);
     } catch (e) {
       state = state.copyWith(
           status: UserStateStatus.error, errorMessage: e.toString());
