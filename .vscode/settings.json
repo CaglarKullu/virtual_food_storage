@@ -1,4 +1,5 @@
 {
     "cmake.configureOnOpen": true,
-    "cmake.sourceDirectory": "C:/Users/Admin/Documents/AppDev/virtual_food_storage/virtual_food_storage/windows"
+    "cmake.sourceDirectory": "C:/Users/Admin/Documents/AppDev/virtual_food_storage/virtual_food_storage/windows",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

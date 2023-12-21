@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:virtual_food_storage/src/models/user.dart';
 import 'package:virtual_food_storage/src/services/auth_response.dart';
 
 import 'i_user_backend.dart';
@@ -25,7 +26,7 @@ class SupabaseBackend implements IUserBackend {
         return ServiceAuthResponse.failure(errorMessage: response.toString());
       }
       if (response.user != null) {
-        final user = User.fromJson(response.user!.toJson());
+        final user = AppUser.fromSupabaseUser(response.user!);
         return ServiceAuthResponse.success(user: user);
       }
       return ServiceAuthResponse.failure(
@@ -51,7 +52,7 @@ class SupabaseBackend implements IUserBackend {
         return ServiceAuthResponse.failure(errorMessage: response.toString());
       }
       if (response.user != null) {
-        final user = User.fromJson(response.user!.toJson());
+        final user = AppUser.fromSupabaseUser(response.user!);
         return ServiceAuthResponse.success(user: user);
       }
       return ServiceAuthResponse.failure(

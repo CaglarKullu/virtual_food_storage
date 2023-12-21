@@ -10,8 +10,7 @@ class UserController extends StateNotifier<UserState> {
 
   Future<void> signUp(String email, String password) async {
     state = state.copyWith(status: UserStateStatus.loading);
-    final ServiceAuthResponse response =
-        await _backend.signUp(email: email, password: password);
+    final response = await _backend.signUp(email: email, password: password);
     if (response.isSuccess) {
       state =
           state.copyWith(status: UserStateStatus.success, user: response.user);
