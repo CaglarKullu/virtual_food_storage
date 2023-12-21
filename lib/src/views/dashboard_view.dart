@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../controllers/user_controller.dart';
 import '../models/food_item.dart';
 import '../providers/food_item_provider.dart';
 import '../providers/user_provider.dart';
@@ -16,20 +14,15 @@ class DashboardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foodItems = ref.watch(foodItemControllerProvider);
-    final userController = ref.read(userProvider.notifier);
     final userState = ref.watch(userProvider);
+
     log(userState.status.toString());
 
-    return _buildUIBasedOnState(
-        context, ref, userState, foodItems, userController);
+    return _buildUIBasedOnState(context, ref, userState, foodItems.items!);
   }
 
-  Widget _buildUIBasedOnState(
-      BuildContext context,
-      WidgetRef ref,
-      UserState userState,
-      List<FoodItem> foodItems,
-      UserController userController) {
+  Widget _buildUIBasedOnState(BuildContext context, WidgetRef ref,
+      UserState userState, List<FoodItem> foodItems) {
     switch (userState.status) {
       case UserStateStatus.initial:
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -72,7 +65,7 @@ class DashboardView extends ConsumerWidget {
     return IconButton(
       icon: const Icon(Icons.refresh),
       onPressed: () {
-        ref.refresh(foodItemControllerProvider);
+        ref.refresh(foodItemControllerProvider.notifier);
       },
     );
   }
@@ -82,6 +75,7 @@ class DashboardView extends ConsumerWidget {
       icon: const Icon(Icons.logout_outlined),
       onPressed: () async {
         await ref.read(userProvider.notifier).signOut();
+        if (!context.mounted) return;
         Navigator.popAndPushNamed(context, '/login');
       },
     );

@@ -8,3 +8,7 @@ final firebaseBackendProvider = Provider<FirebaseBackend>((ref) {
   final firestore = FirebaseFirestore.instance;
   return FirebaseBackend(firebaseAuth, firestore);
 });
+
+final firebaseFirestoreProvider = Provider<FirebaseFirestore>((ref) {
+  return FirebaseFirestore.instance;
+});

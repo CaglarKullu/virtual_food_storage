@@ -11,11 +11,11 @@ class MyFoodItemList extends ConsumerWidget {
     final foodItems = ref.watch(foodItemControllerProvider);
 
     return ListView.builder(
-      itemCount: foodItems.length,
+      itemCount: foodItems.items?.length,
       itemBuilder: (context, index) {
-        final item = foodItems[index];
+        final item = foodItems.items?[index];
         return ListTile(
-          title: Text(item.name),
+          title: Text(item?.name ?? 'no item'),
           // other UI elements
         );
       },
