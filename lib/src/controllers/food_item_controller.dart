@@ -1,22 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod/riverpod.dart';
-
 import '../models/food_item.dart';
+import '../services/interfaces/i_food_item_backend.dart';
 import '../state/food_item_state.dart';
 
 class FoodItemController extends StateNotifier<FoodItemState> {
-  final FirebaseFirestore _firestore;
+  final IFoodItemBackend _backend;
 
-  FoodItemController(this._firestore) : super(const FoodItemState());
+  FoodItemController(this._backend) : super(const FoodItemState());
 
   Future<void> fetchItems() async {
     state = state.copyWith(status: FoodItemStatus.loading);
     try {
-      final QuerySnapshot snapshot =
-          await _firestore.collection('food_items').get();
-      final List<FoodItem> items = snapshot.docs
-          .map((doc) => FoodItem.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
+      final items = await _backend.fetchItems();
       state = state.copyWith(status: FoodItemStatus.success, items: items);
     } catch (e) {
       state = state.copyWith(
@@ -27,7 +22,7 @@ class FoodItemController extends StateNotifier<FoodItemState> {
   Future<void> addItem(FoodItem item) async {
     state = state.copyWith(status: FoodItemStatus.loading);
     try {
-      await _firestore.collection('food_items').add(item.toJson());
+      await _backend.addItem(item);
       await fetchItems();
     } catch (e) {
       state = state.copyWith(
@@ -38,10 +33,7 @@ class FoodItemController extends StateNotifier<FoodItemState> {
   Future<void> updateItem(String id, FoodItem updatedItem) async {
     state = state.copyWith(status: FoodItemStatus.loading);
     try {
-      await _firestore
-          .collection('food_items')
-          .doc(id)
-          .update(updatedItem.toJson());
+      await _backend.updateItem(id, updatedItem);
       await fetchItems();
     } catch (e) {
       state = state.copyWith(
@@ -52,7 +44,7 @@ class FoodItemController extends StateNotifier<FoodItemState> {
   Future<void> deleteItem(String id) async {
     state = state.copyWith(status: FoodItemStatus.loading);
     try {
-      await _firestore.collection('food_items').doc(id).delete();
+      await _backend.deleteItem(id);
       await fetchItems();
     } catch (e) {
       state = state.copyWith(

@@ -5,6 +5,6 @@ import 'firebase_backend_provider.dart';
 
 final foodItemControllerProvider =
     StateNotifierProvider<FoodItemController, FoodItemState>((ref) {
-  final firestore = ref.watch(firebaseFirestoreProvider);
-  return FoodItemController(firestore);
+  final backend = ref.watch(firestoreFoodItemBackendProvider);
+  return FoodItemController(backend);
 });

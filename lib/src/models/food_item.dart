@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+
+@immutable
 class FoodItem {
   final String id;
   final String name;
@@ -5,7 +8,7 @@ class FoodItem {
   final DateTime expirationDate;
   final String category;
 
-  FoodItem({
+  const FoodItem({
     required this.id,
     required this.name,
     required this.quantity,
@@ -13,7 +16,6 @@ class FoodItem {
     required this.category,
   });
 
-  // Factory method for creating a FoodItem from a map (deserialization)
   factory FoodItem.fromJson(Map<String, dynamic> json) {
     return FoodItem(
       id: json['id'],
@@ -24,7 +26,6 @@ class FoodItem {
     );
   }
 
-  // Method to convert FoodItem instance to a map (serialization)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -33,5 +34,57 @@ class FoodItem {
       'expirationDate': expirationDate.toIso8601String(),
       'category': category,
     };
+  }
+
+  // copyWith method for immutability
+  FoodItem copyWith({
+    String? id,
+    String? name,
+    int? quantity,
+    DateTime? expirationDate,
+    String? category,
+  }) {
+    return FoodItem(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      quantity: quantity ?? this.quantity,
+      expirationDate: expirationDate ?? this.expirationDate,
+      category: category ?? this.category,
+    );
+  }
+
+  // Factory methods for Firebase, Supabase, and Custom Backend
+  factory FoodItem.fromFirebase(Map<String, dynamic> data) {
+    // Implement conversion logic specific to Firebase
+    // Assuming the data structure is the same
+    return FoodItem.fromJson(data);
+  }
+
+  factory FoodItem.fromSupabase(Map<String, dynamic> data) {
+    // Implement conversion logic specific to Supabase
+    // Assuming the data structure is the same
+    return FoodItem.fromJson(data);
+  }
+
+  factory FoodItem.fromCustomBackend(Map<String, dynamic> data) {
+    // Implement conversion logic specific to your custom backend
+    // Assuming the data structure is the same
+    return FoodItem.fromJson(data);
+  }
+
+  // Specific methods for different backends
+  Map<String, dynamic> toFirebase() {
+    // Add any Firebase-specific logic if needed
+    return toJson();
+  }
+
+  Map<String, dynamic> toSupabase() {
+    // Add any Supabase-specific logic if needed
+    return toJson();
+  }
+
+  Map<String, dynamic> toCustomBackend() {
+    // Add any custom backend-specific logic if needed
+    return toJson();
   }
 }
