@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:virtual_food_storage/src/services/auth_response.dart';
-import '../services/i_user_backend.dart';
+import 'package:virtual_food_storage/src/utils/auth_response.dart';
+import '../services/interfaces/i_user_backend.dart';
 import '../state/user_state.dart';
 
 class UserController extends StateNotifier<UserState> {

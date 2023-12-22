@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:virtual_food_storage/src/models/user.dart';
-import 'package:virtual_food_storage/src/services/auth_response.dart';
+import 'package:virtual_food_storage/src/utils/auth_response.dart';
 
-import 'i_user_backend.dart';
+import '../interfaces/i_user_backend.dart';
 
 class SupabaseBackend implements IUserBackend {
   final SupabaseClient _supabaseClient;

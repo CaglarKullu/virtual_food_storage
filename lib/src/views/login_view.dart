@@ -6,7 +6,7 @@ import '../controllers/user_controller.dart';
 import '../providers/user_provider.dart';
 import '../state/user_state.dart';
 import '../utils/email_Validator.dart';
-import '../utils/error_snackBar.dart';
+import '../utils/error_snackbar.dart';
 
 class LoginView extends ConsumerWidget {
   final _emailController = TextEditingController();

@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:virtual_food_storage/src/services/auth_response.dart';
-import '../models/user.dart';
-import 'i_user_backend.dart';
+import 'package:virtual_food_storage/src/utils/auth_response.dart';
+
+import '../../models/user.dart';
+import '../interfaces/i_user_backend.dart';
 
 class FirebaseBackend implements IUserBackend {
   final FirebaseAuth _firebaseAuth;

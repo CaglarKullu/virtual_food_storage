@@ -1,4 +1,4 @@
-import 'package:virtual_food_storage/src/services/auth_response.dart';
+import 'package:virtual_food_storage/src/utils/auth_response.dart';
 
 abstract class IUserBackend {
   Future<ServiceAuthResponse> signIn(
