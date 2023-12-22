@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase/src/supabase_client.dart';
-import '../services/backends/supabase_backend.dart';
+import '../services/backends/supabase_user_backend.dart';
 
 final supabaseBackendProvider = Provider<SupabaseBackend>((ref) {
   final supabaseClient = SupabaseClient(

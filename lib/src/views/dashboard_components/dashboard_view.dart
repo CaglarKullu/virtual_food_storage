@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/food_item.dart';
-import '../providers/food_item_provider.dart';
-import '../providers/user_provider.dart';
-import '../state/user_state.dart';
-import 'item_management_view.dart';
+import '../../models/food_item.dart';
+import '../../providers/food_item_provider.dart';
+import '../../providers/user_provider.dart';
+import '../../state/user_state.dart';
+import '../item_management_view.dart';
 
 class DashboardView extends ConsumerWidget {
   const DashboardView({super.key});
