@@ -44,6 +44,7 @@ dependencies:
   firebase_auth_web: ^5.8.12
   cloud_firestore: ^4.13.6
   cloud_firestore_web: ^3.8.10
+  uuid: ^4.2.2
 
 dev_dependencies:
   flutter_test:
