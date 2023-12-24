@@ -29,7 +29,7 @@ This generic controller handles common data manipulation logic, applicable acros
 
 ### Clean Architecture with BaseData
 
-Our BaseData<T> class encapsulates serialization, equality, and debugging functionalities, fostering a clean and maintainable codebase:
+The BaseData<T> class encapsulates serialization, equality, and debugging functionalities, fostering a clean and maintainable codebase:
 
 ```dart
 abstract class BaseData<T> {
@@ -48,7 +48,7 @@ Models like User, FoodItem, and Vault extend BaseData, inheriting these essentia
 
 ### Effective State Management
 
-We use StateNotifier along with Riverpod for state management. The switch statement in UI components reacts to different states:
+I use StateNotifier along with Riverpod for state management. The switch statement in UI components reacts to different states:
 
 ```dart
 class FoodItemsView extends ConsumerWidget {
@@ -69,7 +69,7 @@ This approach ensures that the UI responds dynamically to state changes, enhanci
 
 ### Immutability
 
-Immutability is key for predictable state management. Our models are designed to be immutable, ensuring reliability and simplicity in state changes:
+Immutability is key for predictable state management. The models are designed to be immutable, ensuring reliability and simplicity in state changes:
 
 ```dart
 
