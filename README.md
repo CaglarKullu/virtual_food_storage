@@ -1,7 +1,7 @@
 # Flutter Food Vault Application
 
 ## Overview
-The Flutter Food Vault Application is a testament to modern Flutter development practices, emphasizing clean architecture, immutability, and efficient state management. Purposefully I avoid to use external packeges such as freezed or equaltable for showcasing the prinsibles behind it. 
+The Flutter Food Vault Application is a testament to modern Flutter development practices, emphasizing clean architecture, immutability, and efficient state management. Purposefully I avoid to use external packages such as freezed or equaltable for showcasing the principles behind it. 
 
 ## Key Development Principles
 
